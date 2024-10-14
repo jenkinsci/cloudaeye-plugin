@@ -31,8 +31,10 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
 
     private static final Logger LOGGER = Logger.getLogger(CloudAEyeNotifications.class.getName());
     // CloudAEye endpoint to which the run details need to be notified
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private final String tenantKey;
     // Secret token provided by CloudAEye
+    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
     private final String token;
     // Enables sending logs to CloudAEye endpoint
     private final boolean enableExport;
