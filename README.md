@@ -21,6 +21,7 @@ Provides integration to send build level notifications to [CloudAEye](https://ww
 4. Copy the `Tenant ID` and `Token` values from the step-by-step guide.
 
 ![image][img-cloudaeye-setup]
+![image][img-cloudaeye-creds]
 
 *On Jenkins :*
 1. Goto "Manage Jenkins → System". Search for the CloudAEye configuration section
@@ -76,3 +77,4 @@ mvn clean package
 [img-cloudaeye-setup]: /docs/CloudAEyeSetup.png
 [img-add-as-postbuild]: /docs/AddAsPostBuild.png
 [img-enable-postbuild]: /docs/EnablePostBuildAction.png
+[img-cloudaeye-creds]: /docs/CloudAEyeCreds.png
