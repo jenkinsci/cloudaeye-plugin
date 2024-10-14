@@ -1,0 +1,38 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:t="/lib/hudson">
+    <f:section title="CloudAEye Webhook Configuration">
+        <f:entry title="Tenant Id" field="tenantKey">
+            <f:textbox />
+        </f:entry>
+        <f:entry title="Token" field="token">
+            <f:password />
+        </f:entry>
+        <f:validateButton title="Test Connection" progress="Testing..." method="testConnection" with="tenantKey,token" />
+<!--        <f:entry title="Test Connection">-->
+<!--            <button type="button" onclick="testApiConnection();">Test Connection</button>-->
+<!--            <div id="connection-status"></div>-->
+<!--        </f:entry>-->
+<!--        <script type="text/javascript">-->
+<!--            function testApiConnection() {-->
+<!--                var tenantKey = document.querySelector('[name="tenantKey"]').value;-->
+<!--                var token = document.querySelector('[name="token"]').value;-->
+<!--                var xhr = new XMLHttpRequest();-->
+<!--                xhr.open('POST', '${rootURL}/descriptorByName/io.jenkins.plugins.cloudaeye.CloudAEyeNotifications/doTestConnection', true);-->
+<!--    &lt;!&ndash;            xhr.open('POST', '${rootURL}/descriptorByName/com.example.jenkinsplugin.MyBuildStep/testConnection', true);&ndash;&gt;-->
+<!--                xhr.setRequestHeader('Content-Type', 'application/json');-->
+<!--                xhr.onreadystatechange = function () {-->
+<!--                    if (xhr.readyState == 4) {-->
+<!--                        var statusDiv = document.getElementById('connection-status');-->
+<!--                        if (xhr.status == 200) {-->
+<!--                            statusDiv.innerHTML = '<span style="color:green;">Connection successful!</span>';-->
+<!--                        } else {-->
+<!--                            statusDiv.innerHTML = '<span style="color:red;">Connection failed!</span>';-->
+<!--                        }-->
+<!--                    }-->
+<!--                };-->
+<!--                var requestData = JSON.stringify({ tenantKey: tenantKey, token: token });-->
+<!--                xhr.send(requestData);-->
+<!--            }-->
+<!--        </script>-->
+    </f:section>
+</j:jelly>
