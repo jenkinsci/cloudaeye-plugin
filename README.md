@@ -66,7 +66,7 @@ OS name: "linux", version: "4.4.0-65-generic", arch: "amd64", family: "unix"
 ```
 
 Create an HPI file to install in Jenkins (HPI file will be in
-`target/cloudaeye-notifications.hpi`).
+`target/cloudaeye.hpi`).
 
 ```shell
 mvn clean package
