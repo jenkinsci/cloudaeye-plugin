@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import hudson.util.Secret;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -33,10 +34,10 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
     private static final Logger LOGGER = Logger.getLogger(CloudAEyeNotifications.class.getName());
     // CloudAEye endpoint to which the run details need to be notified
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private final String tenantKey;
+    private final Secret tenantKey;
     // Secret token provided by CloudAEye
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private final String token;
+    private final Secret token;
     // Enables sending logs to CloudAEye endpoint
     private final boolean enableExport;
 
@@ -53,7 +54,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * Returns the CloudAEye webhook endpoint
      * @return CloudAEye endpoint URL
      */
-    public String getTenantKey() {
+    public Secret getTenantKey() {
         return tenantKey;
     }
 
@@ -61,7 +62,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * Returns the token
      * @return CloudAEye secret token
      */
-    public String getToken() {
+    public Secret getToken() {
         return token;
     }
     /**
@@ -234,7 +235,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * @param tenantKey Tenant key provided by CloudAEye
      * @param token     Secret token provided by CloudAEye
      */
-    private void sendDetailsToCloudAEye(int buildNumber, String details, String tenantKey, String token) {
+    private void sendDetailsToCloudAEye(int buildNumber, String details, Secret tenantKey, Secret token) {
         try {
             NotificationSender notificationSender = new NotificationSender();
             HttpResponse response = notificationSender.sendDetailsToCloudAEye(details,tenantKey,token);

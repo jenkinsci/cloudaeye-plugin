@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import jenkins.model.GlobalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -29,10 +30,8 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
         return ExtensionList.lookupSingleton(GlobalKeyConfiguration.class);
     }
 
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private String tenantKey;
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private String token;
+    private Secret tenantKey;
+    private Secret token;
 
     public GlobalKeyConfiguration() {
         // When Jenkins loads the plugin, load any saved configurations
@@ -40,22 +39,22 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
     }
 
     // Getters and setters for keys
-    public String getTenantKey() {
+    public Secret getTenantKey() {
         return tenantKey;
     }
 
     @DataBoundSetter
-    public void setTenantKey(String tenantKey) {
+    public void setTenantKey(Secret tenantKey) {
         this.tenantKey = tenantKey;
         save();
     }
 
-    public String getToken() {
+    public Secret getToken() {
         return token;
     }
 
     @DataBoundSetter
-    public void setToken(String token) {
+    public void setToken(Secret token) {
         this.token = token;
         save();
     }
@@ -88,8 +87,8 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
      */
     @SuppressWarnings("lgtm[jenkins/no-permission-check]")
     @POST
-    public FormValidation doTestConnection(@QueryParameter("tenantKey") final String tenantKey,
-                                           @QueryParameter("token") final String token) throws IOException, ServletException {
+    public FormValidation doTestConnection(@QueryParameter("tenantKey") final Secret tenantKey,
+                                           @QueryParameter("token") final Secret token) throws IOException, ServletException {
         try {
             // Convert the details to string
             JsonObject ping = new JsonObject();
