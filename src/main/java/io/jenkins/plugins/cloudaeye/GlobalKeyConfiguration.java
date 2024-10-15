@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 @Extension
 public class GlobalKeyConfiguration extends GlobalConfiguration {
     private static final Logger LOGGER = Logger.getLogger(GlobalKeyConfiguration.class.getName());
-    private final NotificationSender notificationSender;
 
     /** @return the singleton instance */
     public static GlobalKeyConfiguration get() {
@@ -38,7 +37,6 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
     public GlobalKeyConfiguration() {
         // When Jenkins loads the plugin, load any saved configurations
         load();
-        this.notificationSender = new NotificationSender();
     }
 
     // Getters and setters for keys
@@ -97,7 +95,8 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
             JsonObject ping = new JsonObject();
             ping.addProperty("ping", true);
             LOGGER.info(MessageFormat.format("[#{0}] Ping payload : {1}", tenantKey, ping.toString()));
-            HttpResponse response = this.notificationSender.sendDetailsToCloudAEye(ping.toString(),tenantKey,token);
+            NotificationSender notificationSender = new NotificationSender();
+            HttpResponse response = notificationSender.sendDetailsToCloudAEye(ping.toString(),tenantKey,token);
             if (response.getStatusLine().getStatusCode() == 200) {
                 LOGGER.info(MessageFormat.format("[#{0}] Ping successful", tenantKey));
                 return FormValidation.ok("Connection successful!");

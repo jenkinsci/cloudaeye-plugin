@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -38,21 +39,14 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
     private final String token;
     // Enables sending logs to CloudAEye endpoint
     private final boolean enableExport;
-    NotificationSender notificationSender;
 
     @DataBoundConstructor
-    public CloudAEyeNotifications(boolean enableExport, String tenantKey, String token) {
+    public CloudAEyeNotifications(boolean enableExport) {
         this.enableExport = enableExport;
         // Access the global configuration class
         GlobalKeyConfiguration config = GlobalKeyConfiguration.get();
-        this.notificationSender = new NotificationSender();
-        if (config != null) {
-            this.tenantKey = config.getTenantKey();
-            this.token = config.getToken();
-        } else {
-            this.tenantKey = tenantKey;
-            this.token = token;
-        }
+        this.tenantKey = config.getTenantKey();
+        this.token = config.getToken();
     }
 
     /**
@@ -242,7 +236,8 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      */
     private void sendDetailsToCloudAEye(int buildNumber, String details, String tenantKey, String token) {
         try {
-            HttpResponse response = this.notificationSender.sendDetailsToCloudAEye(details,tenantKey,token);
+            NotificationSender notificationSender = new NotificationSender();
+            HttpResponse response = notificationSender.sendDetailsToCloudAEye(details,tenantKey,token);
             if (response.getStatusLine().getStatusCode() == 200) {
                 LOGGER.log(Level.INFO, MessageFormat.format("[#{0}] Success response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
             } else {
@@ -318,6 +313,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * Describes the step display name (to show on the jenkins UI)
      */
     @Extension
+    @Symbol("sendNotificationsToCloudAEye")
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
             super(CloudAEyeNotifications.class);
