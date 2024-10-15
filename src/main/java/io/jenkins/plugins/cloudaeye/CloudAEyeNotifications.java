@@ -147,7 +147,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
              Collect logs as list of strings
              */
             LOGGER.info(MessageFormat.format("[#{0}] Extracting run logs", run.getNumber()));
-            job.add("logs", extractRunLogs(run.getNumber(), run.getLogText()));
+            job.add("logs", extractRunLogs(run.getNumber(), run));
 
             buildDetails.add("job", job);
 
@@ -251,17 +251,12 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
 
 
     /**
-     * Extract run logs by converting large annotated text logs to list of strings
-     * @param logText The annotated large text
+     * Extract run logs as list of string
+     * @param run The current run
      * @return Json array of log strings
      */
-    private JsonArray extractRunLogs(int buildNumber, AnnotatedLargeText<?> logText) throws IOException {
-        // Use a StringWriter to collect the log output
-        StringWriter writer = new StringWriter();
-        logText.writeLogTo(0, writer);
-        // Convert the entire log content to a string
-        String fullLog = writer.toString();
-        String[] lines = fullLog.split("\n");
+    private JsonArray extractRunLogs(int buildNumber, Run<?, ?> run) throws IOException {
+        List<String> lines = run.getLog(Integer.MAX_VALUE);
         // Return the logs as json array of strings
         JsonArray buildLogs = new JsonArray();
         for (String log : lines) {
