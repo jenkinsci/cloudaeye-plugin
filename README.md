@@ -57,6 +57,7 @@ Provides integration to send build level notifications to [CloudAEye](https://ww
      }
    }
    ```
+![image][img-pipeline-script-generator]
 
 ## Developer instructions
 
@@ -82,3 +83,4 @@ mvn clean package
 [img-add-as-postbuild]: /docs/AddAsPostBuild.png
 [img-enable-postbuild]: /docs/EnablePostBuildAction.png
 [img-cloudaeye-creds]: /docs/CloudAEyeCreds.png
+[img-pipeline-script-generator]: /docs/PipelineScriptGenerator.png
