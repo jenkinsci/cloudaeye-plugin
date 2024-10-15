@@ -43,16 +43,20 @@ Provides integration to send build level notifications to [CloudAEye](https://ww
 
 ### Enable plugin for pipeline jobs
 
-1. Open the `Jenkinsfile` script file in the select project repo.
-2. Add the below snippet in post section of the script
-```
-    post {
-        always {
-            // Use the 'step' syntax to invoke the cloudaeye plugin in the post section
-            step([$class: 'CloudAEyeNotifications'])
-        }
-    }
-```
+1. From Dashboard, select the required pipeline project.
+2. Goto Pipeline Syntax > Snippet Generator
+3. In Sample Step drop down, select the option `sendNotificationsToCloudAEye: Send build notifications to CloudAEye`
+4. Check the option to enable sending build notifications
+5. Click `Generate Pipeline Script`. 
+6. Open the `Jenkinsfile` script file in the select project repo. 
+7. Copy the snippet generated in step 5 and add it in the post section of the script
+   ``` 
+   post {
+     always {
+        sendNotificationsToCloudAEye true
+     }
+   }
+   ```
 
 ## Developer instructions
 
