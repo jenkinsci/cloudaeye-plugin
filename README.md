@@ -15,7 +15,7 @@ Provides integration to send build level notifications to [CloudAEye](https://ww
 ### Configuring the Plugin
 
 *On CloudAEye :*
-1. Create an account with [CloudAEye](https://cloudaeye.com/) (if not exists)
+1. Create an account: CloudAEye offers a **free tier** for individual developers. You may get started by signing up [here](https://console.cloudaeye.com/signup). You can read more about the free-tier [here](https://docs.cloudaeye.com/free-tier.html)
 2. Navigate to Home > Test RCA > Setup.
 3. Select `Jenkins` from the list of available integrations.
 4. Copy the `Tenant ID` and `Token` values from the step-by-step guide.
