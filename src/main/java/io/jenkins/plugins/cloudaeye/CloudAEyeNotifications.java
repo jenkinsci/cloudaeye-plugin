@@ -92,6 +92,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
         LOGGER.info("Received run notification for run : " + run.getNumber());
         if(!this.getEnableExport()){
             LOGGER.info(MessageFormat.format("[#{0}] Exporting to CloudAEye is not enabled. Skipping export", run.getNumber()));
+            return;
         }
         /*
          JSON Structure:
@@ -125,6 +126,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
         Result buildResult = run.getResult();
         if (!(buildResult == Result.SUCCESS || buildResult == Result.FAILURE)) {
             LOGGER.info(MessageFormat.format("[#{0}] Build status is neither success nor failure. Further processing skipped", run.getNumber()));
+            return;
         }
         try {
             /*
