@@ -1,6 +1,5 @@
 package io.jenkins.plugins.cloudaeye;
 
-import hudson.model.TaskListener;
 import hudson.util.Secret;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

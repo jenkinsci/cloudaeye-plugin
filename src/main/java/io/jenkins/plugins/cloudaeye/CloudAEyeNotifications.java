@@ -7,16 +7,13 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.console.AnnotatedLargeText;
 import hudson.model.*;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.*;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import hudson.util.Secret;
