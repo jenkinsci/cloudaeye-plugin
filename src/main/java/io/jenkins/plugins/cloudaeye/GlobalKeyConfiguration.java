@@ -93,18 +93,18 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
             // Convert the details to string
             JsonObject ping = new JsonObject();
             ping.addProperty("ping", true);
-            LOGGER.info(MessageFormat.format("[#{0}] Ping payload : {1}", tenantKey, ping.toString()));
+            LOGGER.fine(MessageFormat.format("[#{0}] Ping payload : {1}", tenantKey, ping.toString()));
             NotificationSender notificationSender = new NotificationSender();
             HttpResponse response = notificationSender.sendDetailsToCloudAEye(ping.toString(),tenantKey,token);
             if (response.getStatusLine().getStatusCode() == 200) {
-                LOGGER.info(MessageFormat.format("[#{0}] Ping successful", tenantKey));
+                LOGGER.fine(MessageFormat.format("[#{0}] Ping successful", tenantKey));
                 return FormValidation.ok("Connection successful!");
             } else {
-                LOGGER.info(MessageFormat.format("[#{0}] Ping failed : {1}", tenantKey, EntityUtils.toString(response.getEntity())));
+                LOGGER.fine(MessageFormat.format("[#{0}] Ping failed : {1}", tenantKey, EntityUtils.toString(response.getEntity())));
                 return FormValidation.error("Connection failed! Got response: " + EntityUtils.toString(response.getEntity()));
             }
         } catch (IOException e) {
-            LOGGER.info(MessageFormat.format("[#{0}] Error while trying to ping CloudAEye webhook endpoint : {1}", tenantKey, e.getMessage()));
+            LOGGER.fine(MessageFormat.format("[#{0}] Error while trying to ping CloudAEye webhook endpoint : {1}", tenantKey, e.getMessage()));
             return FormValidation.error("Error while trying to ping CloudAEye webhook endpoint : " + e.getMessage());
         }
     }

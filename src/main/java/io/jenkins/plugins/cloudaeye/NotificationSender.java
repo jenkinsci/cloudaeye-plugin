@@ -1,5 +1,6 @@
 package io.jenkins.plugins.cloudaeye;
 
+import hudson.model.TaskListener;
 import hudson.util.Secret;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -41,7 +42,6 @@ public class NotificationSender {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             String endpoint = getEndpointByTenantKey(tenantKey.getPlainText());
             // Set endpoint and respective auth headers
-            LOGGER.info(MessageFormat.format("Exporting build details to CloudAEye endpoint : {0}", endpoint));
             HttpPost httpPost = new HttpPost(endpoint);
             httpPost.setHeader("Authorization", "Basic " + token);
             httpPost.setHeader("Content-Type", "application/json");
