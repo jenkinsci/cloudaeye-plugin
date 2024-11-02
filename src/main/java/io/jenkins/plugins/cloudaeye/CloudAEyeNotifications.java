@@ -30,22 +30,12 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep {
 
     private static final Logger LOGGER = Logger.getLogger(CloudAEyeNotifications.class.getName());
-    // CloudAEye endpoint to which the run details need to be notified
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private final Secret tenantKey;
-    // Secret token provided by CloudAEye
-    @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private final Secret token;
-    // Enables sending logs to CloudAEye endpoint
     private final boolean enableExport;
+    GlobalKeyConfiguration config = GlobalKeyConfiguration.get();
 
     @DataBoundConstructor
     public CloudAEyeNotifications(boolean enableExport) {
         this.enableExport = enableExport;
-        // Access the global configuration class
-        GlobalKeyConfiguration config = GlobalKeyConfiguration.get();
-        this.tenantKey = config.getTenantKey();
-        this.token = config.getToken();
     }
 
     /**
@@ -53,7 +43,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * @return CloudAEye endpoint URL
      */
     public Secret getTenantKey() {
-        return tenantKey;
+        return config.getTenantKey();
     }
 
     /**
@@ -61,7 +51,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * @return CloudAEye secret token
      */
     public Secret getToken() {
-        return token;
+        return config.getToken();
     }
     /**
      * Returns the enableExport value
@@ -221,7 +211,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
             LOGGER.fine(MessageFormat.format("[#{0}] Build details successfully captured : {1}", run.getNumber(), buildDetails));
 
             // Export the extracted details to CloudAEye
-            sendDetailsToCloudAEye(run.getNumber(), buildDetails.toString(), this.getTenantKey(), this.getToken(), listener);
+            sendDetailsToCloudAEye(run.getNumber(), buildDetails.toString(), this.getTenantKey(), this.getToken());
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -235,18 +225,17 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * @param tenantKey Tenant key provided by CloudAEye
      * @param token     Secret token provided by CloudAEye
      */
-    private void sendDetailsToCloudAEye(int buildNumber, String details, Secret tenantKey, Secret token, TaskListener listener) {
-        PrintStream logger = listener.getLogger();
+    private void sendDetailsToCloudAEye(int buildNumber, String details, Secret tenantKey, Secret token) {
         try {
             NotificationSender notificationSender = new NotificationSender();
             HttpResponse response = notificationSender.sendDetailsToCloudAEye(details,tenantKey,token);
             if (response.getStatusLine().getStatusCode() == 200) {
-                logger.println(MessageFormat.format("[#{0}] Success response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
+                LOGGER.fine(MessageFormat.format("[#{0}] Success response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
             } else {
-                logger.println(MessageFormat.format("[#{0}] Error response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
+                LOGGER.warning(MessageFormat.format("[#{0}] Error response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
             }
         } catch (IOException e) {
-            logger.println(MessageFormat.format("[#{0}] Error while trying to send run details to CloudAEye : {1}", buildNumber, e.getMessage()));
+            LOGGER.warning(MessageFormat.format("[#{0}] Error while trying to send run details to CloudAEye : {1}", buildNumber, e.getMessage()));
         }
     }
 
