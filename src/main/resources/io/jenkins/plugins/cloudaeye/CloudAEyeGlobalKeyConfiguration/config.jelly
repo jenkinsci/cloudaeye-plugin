@@ -1,0 +1,12 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:t="/lib/hudson">
+    <f:section title="CloudAEye Webhook Configuration">
+        <f:entry title="Tenant Id" field="tenantKey">
+            <f:textbox />
+        </f:entry>
+        <f:entry title="Token" field="token">
+            <f:password />
+        </f:entry>
+        <f:validateButton title="Test Connection" progress="Testing..." method="testConnection" with="tenantKey,token" />
+    </f:section>
+</j:jelly>

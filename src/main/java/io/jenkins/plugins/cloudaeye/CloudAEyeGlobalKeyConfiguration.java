@@ -22,18 +22,18 @@ import java.util.logging.Logger;
  * Handles the global key configuration for the plugin
  */
 @Extension
-public class GlobalKeyConfiguration extends GlobalConfiguration {
-    private static final Logger LOGGER = Logger.getLogger(GlobalKeyConfiguration.class.getName());
+public class CloudAEyeGlobalKeyConfiguration extends GlobalConfiguration {
+    private static final Logger LOGGER = Logger.getLogger(CloudAEyeGlobalKeyConfiguration.class.getName());
 
     /** @return the singleton instance */
-    public static GlobalKeyConfiguration get() {
-        return ExtensionList.lookupSingleton(GlobalKeyConfiguration.class);
+    public static CloudAEyeGlobalKeyConfiguration get() {
+        return ExtensionList.lookupSingleton(CloudAEyeGlobalKeyConfiguration.class);
     }
 
     private Secret tenantKey;
     private Secret token;
 
-    public GlobalKeyConfiguration() {
+    public CloudAEyeGlobalKeyConfiguration() {
         // When Jenkins loads the plugin, load any saved configurations
         load();
     }

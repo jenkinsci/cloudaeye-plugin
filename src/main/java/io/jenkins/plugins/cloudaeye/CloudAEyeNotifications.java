@@ -11,7 +11,6 @@ import hudson.model.*;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.*;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.logging.Logger;
@@ -31,7 +30,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
 
     private static final Logger LOGGER = Logger.getLogger(CloudAEyeNotifications.class.getName());
     private final boolean enableExport;
-    GlobalKeyConfiguration config = GlobalKeyConfiguration.get();
+    CloudAEyeGlobalKeyConfiguration config = CloudAEyeGlobalKeyConfiguration.get();
 
     @DataBoundConstructor
     public CloudAEyeNotifications(boolean enableExport) {
