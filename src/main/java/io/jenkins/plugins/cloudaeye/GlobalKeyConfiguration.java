@@ -85,7 +85,6 @@ public class GlobalKeyConfiguration extends GlobalConfiguration {
      * @throws IOException
      * @throws ServletException
      */
-    @SuppressWarnings("lgtm[jenkins/no-permission-check]")
     @POST
     public FormValidation doTestConnection(@QueryParameter("tenantKey") final Secret tenantKey,
                                            @QueryParameter("token") final Secret token) throws IOException, ServletException {
