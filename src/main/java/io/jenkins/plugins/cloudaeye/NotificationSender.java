@@ -1,6 +1,9 @@
 package io.jenkins.plugins.cloudaeye;
 
 import hudson.util.Secret;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -8,11 +11,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.logging.Logger;
 
 /**
  * Sends given notification payload to the CloudAEye webhook endpoint
@@ -27,7 +25,8 @@ public class NotificationSender {
      * @return url string
      */
     private String getEndpointByTenantKey(String tenantKey) {
-        return MessageFormat.format("https://api.cloudaeye.com/rca/test/v1/tenants/{0}/jenkins/process-build", tenantKey);
+        return MessageFormat.format(
+                "https://api.cloudaeye.com/rca/test/v1/tenants/{0}/jenkins/process-build", tenantKey);
     }
 
     /**
@@ -53,5 +52,4 @@ public class NotificationSender {
             return client.execute(httpPost);
         }
     }
-
 }
