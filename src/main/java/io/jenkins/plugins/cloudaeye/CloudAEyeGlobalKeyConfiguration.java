@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import jenkins.model.GlobalConfiguration;
+import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -64,6 +65,9 @@ public class CloudAEyeGlobalKeyConfiguration extends GlobalConfiguration {
      * @return Valid form
      */
     public FormValidation doCheckTenantKey(@QueryParameter String tenantKey) {
+        if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
+            return FormValidation.ok();
+        }
         if (StringUtils.isEmpty(tenantKey)) {
             return FormValidation.warning("Please specify a valid tenant key");
         }
