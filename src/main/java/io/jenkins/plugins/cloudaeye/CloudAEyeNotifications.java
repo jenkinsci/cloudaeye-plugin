@@ -124,7 +124,7 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
             EnvVars envVars = run.getEnvironment(listener);
             job.addProperty("startTime", run.getStartTimeInMillis());
             long currentTime = System.currentTimeMillis();
-            long duration = (long) (Math.ceil(currentTime - run.getStartTimeInMillis()) / 1000);
+            long duration = (long) (Math.ceil(currentTime - run.getStartTimeInMillis()) / 1000.0);
             job.addProperty("endTime", currentTime);
             job.addProperty("name", run.getParent().getFullName());
             job.addProperty("id", run.getParent().getUrl());
