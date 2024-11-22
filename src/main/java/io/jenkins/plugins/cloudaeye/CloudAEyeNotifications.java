@@ -10,12 +10,11 @@ import hudson.Launcher;
 import hudson.model.*;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.*;
+import hudson.util.Secret;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.logging.Logger;
-
-import hudson.util.Secret;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -77,8 +76,9 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
         // Collect the entire run payload to be sent to CloudAEye
         JsonObject buildDetails = new JsonObject();
         LOGGER.fine("Received run notification for run : " + run.getNumber());
-        if(!this.getEnableExport()){
-            LOGGER.fine(MessageFormat.format("[#{0}] Exporting to CloudAEye is not enabled. Skipping export", run.getNumber()));
+        if (!this.getEnableExport()) {
+            LOGGER.fine(MessageFormat.format(
+                    "[#{0}] Exporting to CloudAEye is not enabled. Skipping export", run.getNumber()));
             return;
         }
         /*
@@ -112,7 +112,8 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
         // If run is not failed then skip further processing
         Result buildResult = run.getResult();
         if (!(buildResult == Result.SUCCESS || buildResult == Result.FAILURE)) {
-            LOGGER.fine(MessageFormat.format("[#{0}] Build status is neither success nor failure. Further processing skipped", run.getNumber()));
+            LOGGER.fine(MessageFormat.format(
+                    "[#{0}] Build status is neither success nor failure. Further processing skipped", run.getNumber()));
             return;
         }
         try {
@@ -123,18 +124,18 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
             EnvVars envVars = run.getEnvironment(listener);
             job.addProperty("startTime", run.getStartTimeInMillis());
             long currentTime = System.currentTimeMillis();
-            long duration = (long)(Math.ceil(currentTime - run.getStartTimeInMillis()) / 1000);
+            long duration = (long) (Math.ceil(currentTime - run.getStartTimeInMillis()) / 1000.0);
             job.addProperty("endTime", currentTime);
             job.addProperty("name", run.getParent().getFullName());
             job.addProperty("id", run.getParent().getUrl());
             job.addProperty("buildNumber", run.getNumber());
             job.addProperty("duration", duration);
             job.addProperty("url", run.getUrl());
-            job.addProperty("status", buildResult == Result.SUCCESS ? "success": "failure");
+            job.addProperty("status", buildResult == Result.SUCCESS ? "success" : "failure");
 
             /*
-             Collect logs as list of strings
-             */
+            Collect logs as list of strings
+            */
             LOGGER.fine(MessageFormat.format("[#{0}] Extracting run logs", run.getNumber()));
             job.add("logs", extractRunLogs(run.getNumber(), run));
 
@@ -149,9 +150,10 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
             Collect PR details (if event is PR)
             */
             if (envVars.containsKey("CHANGE_ID") || envVars.containsKey("ghprbPullId")) {
-                LOGGER.fine(MessageFormat.format("[#{0}] Identified git event: PR. Extracting details of the PR", run.getNumber()));
+                LOGGER.fine(MessageFormat.format(
+                        "[#{0}] Identified git event: PR. Extracting details of the PR", run.getNumber()));
                 source.addProperty("eventType", "PR");
-                if(envVars.containsKey("CHANGE_ID")){
+                if (envVars.containsKey("CHANGE_ID")) {
                     source.addProperty("prId", envVars.get("CHANGE_ID"));
                     source.addProperty("prSourceBranch", envVars.get("CHANGE_BRANCH"));
                     source.addProperty("prTargetBranch", envVars.get("CHANGE_TARGET"));
@@ -163,7 +165,8 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
                     source.addProperty("prLink", envVars.get("ghprbPullLink"));
                 }
             } else if (envVars.containsKey("GIT_BRANCH")) {
-                LOGGER.fine(MessageFormat.format("[#{0}] Identified git event: PUSH. Extracting details of the PR", run.getNumber()));
+                LOGGER.fine(MessageFormat.format(
+                        "[#{0}] Identified git event: PUSH. Extracting details of the PR", run.getNumber()));
                 source.addProperty("eventType", "PUSH");
                 /*
                 Collect git commit and branch details (if git event is push)
@@ -177,18 +180,22 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
             }
 
             /*
-                Collect file log changes
-             */
-            if (run instanceof WorkflowRun || run instanceof AbstractBuild<?, ?> ){
+               Collect file log changes
+            */
+            if (run instanceof WorkflowRun || run instanceof AbstractBuild<?, ?>) {
                 // Extract change log for current build
                 JsonArray cumulativeChangeLogs = new JsonArray();
                 // If current build is a failure
-                if(buildResult == Result.FAILURE) {
-                    LOGGER.fine(MessageFormat.format("[#{0}] Current build is a failure, collect all change logs till last successful build", run.getNumber()));
+                if (buildResult == Result.FAILURE) {
+                    LOGGER.fine(MessageFormat.format(
+                            "[#{0}] Current build is a failure, collect all change logs till last successful build",
+                            run.getNumber()));
                     // Get details of last build that succeeded
                     Run<?, ?> previousSuccessfulRun = run.getPreviousSuccessfulBuild();
                     if (previousSuccessfulRun != null) {
-                        LOGGER.fine(MessageFormat.format("[#{0}] Previous successful build : {1}", run.getNumber(), previousSuccessfulRun.getNumber()));
+                        LOGGER.fine(MessageFormat.format(
+                                "[#{0}] Previous successful build : {1}",
+                                run.getNumber(), previousSuccessfulRun.getNumber()));
                         // Collect change logs for all runs between the current and last successful one
                         Run<?, ?> r = run;
                         while (r != null && (r.getNumber() >= previousSuccessfulRun.getNumber())) {
@@ -198,7 +205,9 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
                         }
                     }
                 } else {
-                    LOGGER.fine(MessageFormat.format("[#{0}] Current build is a success, collect change logs of current build", run.getNumber()));
+                    LOGGER.fine(MessageFormat.format(
+                            "[#{0}] Current build is a success, collect change logs of current build",
+                            run.getNumber()));
                     cumulativeChangeLogs = this.extractChangeLogsForRun(run.getNumber(), run);
                 }
                 // Add change log details to the parent object
@@ -207,7 +216,8 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
 
             // Add source to build details
             buildDetails.add("source", source);
-            LOGGER.fine(MessageFormat.format("[#{0}] Build details successfully captured : {1}", run.getNumber(), buildDetails));
+            LOGGER.fine(MessageFormat.format(
+                    "[#{0}] Build details successfully captured : {1}", run.getNumber(), buildDetails));
 
             // Export the extracted details to CloudAEye
             sendDetailsToCloudAEye(run.getNumber(), buildDetails.toString(), this.getTenantKey(), this.getToken());
@@ -227,17 +237,21 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
     private void sendDetailsToCloudAEye(int buildNumber, String details, Secret tenantKey, Secret token) {
         try {
             NotificationSender notificationSender = new NotificationSender();
-            HttpResponse response = notificationSender.sendDetailsToCloudAEye(details,tenantKey,token);
+            HttpResponse response = notificationSender.sendDetailsToCloudAEye(details, tenantKey, token);
             if (response.getStatusLine().getStatusCode() == 200) {
-                LOGGER.fine(MessageFormat.format("[#{0}] Success response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
+                LOGGER.fine(MessageFormat.format(
+                        "[#{0}] Success response received from CloudAEye endpoint : {1}",
+                        buildNumber, EntityUtils.toString(response.getEntity())));
             } else {
-                LOGGER.warning(MessageFormat.format("[#{0}] Error response received from CloudAEye endpoint : {1}", buildNumber, EntityUtils.toString(response.getEntity())));
+                LOGGER.warning(MessageFormat.format(
+                        "[#{0}] Error response received from CloudAEye endpoint : {1}",
+                        buildNumber, EntityUtils.toString(response.getEntity())));
             }
         } catch (IOException e) {
-            LOGGER.warning(MessageFormat.format("[#{0}] Error while trying to send run details to CloudAEye : {1}", buildNumber, e.getMessage()));
+            LOGGER.warning(MessageFormat.format(
+                    "[#{0}] Error while trying to send run details to CloudAEye : {1}", buildNumber, e.getMessage()));
         }
     }
-
 
     /**
      * Extract run logs as list of string
@@ -261,16 +275,17 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
      * @return JSONArray of the change logs
      */
     private JsonArray extractChangeLogsForRun(int buildNumber, Run<?, ?> run) {
-        LOGGER.fine(MessageFormat.format("[#{0}] Collecting change log set for run : {1}", buildNumber, run.getNumber()));
+        LOGGER.fine(
+                MessageFormat.format("[#{0}] Collecting change log set for run : {1}", buildNumber, run.getNumber()));
         List<ChangeLogSet<? extends ChangeLogSet.Entry>> changeLogSets;
         if (run instanceof WorkflowRun) {
-            changeLogSets = ((WorkflowRun) run ).getChangeSets();
+            changeLogSets = ((WorkflowRun) run).getChangeSets();
         } else {
-            changeLogSets = ((AbstractBuild<?, ?> )run).getChangeSets();
+            changeLogSets = ((AbstractBuild<?, ?>) run).getChangeSets();
         }
         /*
-            Collect file changes
-         */
+           Collect file changes
+        */
         JsonArray changeLogs = new JsonArray();
         for (ChangeLogSet<? extends ChangeLogSet.Entry> changeLogSet : changeLogSets) {
             for (ChangeLogSet.Entry entry : changeLogSet) {
@@ -291,8 +306,6 @@ public class CloudAEyeNotifications extends Recorder implements SimpleBuildStep 
         }
         return changeLogs;
     }
-
-
 
     /**
      * Describes the step display name (to show on the jenkins UI)
