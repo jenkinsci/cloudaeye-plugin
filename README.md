@@ -1,4 +1,4 @@
-# CloudAEye plugin for Jenkins
+# CloudAEye Jenkins Plugin
 
 Provides integration to send build level notifications to [CloudAEye](https://www.cloudaeye.com/) to perform RCA(Root Cause Analysis) over test failures.
 
