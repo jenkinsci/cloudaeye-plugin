@@ -22,6 +22,32 @@
       <url>https://opensource.org/license/mit/</url>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <id>bhavyalatha26</id>
+      <name>Bhavya Latha Bandaru</name>
+      <url>https://github.com/bhavyalatha26</url>
+      <roles>
+        <role>maintainer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>PiyushKumar11</id>
+      <name>Piyush Kumar</name>
+      <url>https://github.com/PiyushKumar11</url>
+      <roles>
+        <role>maintainer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>nazrul-cloudaeye</id>
+      <name>Nazrul Islam</name>
+      <url>https://github.com/nazrul-cloudaeye</url>
+      <roles>
+        <role>maintainer</role>
+      </roles>
+    </developer>
+  </developers>
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
     <connection>scm:git:https://github.com/${gitHubRepo}</connection>
     <developerConnection>scm:git:https://github.com/${gitHubRepo}</developerConnection>
@@ -34,7 +60,8 @@
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <jenkins.version>2.440.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-
+    <!-- https://github.com/jenkins-infra/update-center2/blob/master/resources/allowed-github-topics.properties-->
+    <jenkins.plugin.labels>label1,label2,label3</jenkins.plugin.labels>
     <spotless.check.skip>false</spotless.check.skip>
   </properties>
 
